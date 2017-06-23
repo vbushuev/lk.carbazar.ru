@@ -1,0 +1,15 @@
+#AllowOverride All
+#DirectoryIndex index.php
+
+#RewriteEngine on
+
+#RewriteCond %{HTTP_HOST} ^lk.cars-bazar.ru$ [NC]
+
+
+
+<IfModule mod_rewrite.c>
+   RewriteEngine On
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
