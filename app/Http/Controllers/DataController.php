@@ -118,9 +118,10 @@ class DataController extends Controller
         if($vin!=false){
             $host = "http://api.".preg_replace("/lk\./i","",request()->getHost())."/";
             $user = $rq->user();
-            $sel= DB::table("cb_apikeys")->where("cb_apikeys.account_id","=",$user->account_id)->select("apikey")->first();
+            $apikey = Apikey::find($user->apikey_id);
+            //$sel= DB::table("cb_apikeys")->where("cb_apikeys.id","=",$user->apikay_id)->select("apikey")->first();
             $client = new HttpClient();
-            $response = $client->get($host."auth?login=".$user->login."&password=".$user->password."&apikey=".$sel->apikey)->send();
+            $response = $client->get($host."auth?login=".$user->login."&password=".$user->password."&apikey=".$apikey->apikey)->send();
             if($response->getStatusCode()=="200"){
                 $authJSON = json_decode($response->getBody(),true); // 200
                 $session = $authJSON["response"]["session"];
