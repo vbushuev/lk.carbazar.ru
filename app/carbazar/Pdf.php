@@ -39,10 +39,10 @@ class Pdf extends FPDF{
         }
 
         $pdf->HeadingGreen('РЫНОЧНАЯ СТОИМОСТЬ');$odd = false;
-        $val =(isset($report["carprice"]) && $report["carprice"]!=null && isset($report["carprice"]["car_price_from"]))
-            ?"от "+$report["carprice"]["car_price_from"]+" до "+$report["carprice"]["car_price"]
+        $carpriceval =(isset($report["carprice"]) && $report["carprice"]!=null && isset($report["carprice"]["car_price_from"]))
+            ?"от ".$report["carprice"]["car_price_from"]." до ".$report["carprice"]["car_price"]
             :"Не определено";
-        $pdf->Row("Примерная стоимость",$val,$odd);
+        $pdf->Row("Примерная стоимость",$carpriceval,$odd);
 
         $pdf->HeadingBlue('ПРОБЕГ АВТОМОБИЛЯ');$odd = false;
         $pdf->Row("Значение","Данные не зафиксированы",$odd);

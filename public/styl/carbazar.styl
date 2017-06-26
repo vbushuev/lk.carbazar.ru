@@ -1,7 +1,19 @@
 // out: ../css/carbazar.css, compress: true
-.history-item
-    height: 3em;
-    line-height: 3em;
+.row
+    .item
+        height: 3em;
+        line-height: 3em;
+        cursor: pointer;
+        a
+            text-decoration: none;
+        .data-actions
+            line-height: 1em;
+    .item:hover
+        background-color: rgba(0,0,0,.1);
+        transition: all .2s ease-in;
+    .header
+        font-weight: 600;
+        font-size: 110%;
 .history-item.status-success
     background-color: rgba(0,255,125,.5);
 .history-item.status-failed

@@ -19,6 +19,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{{ asset('css/carbazar.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -61,8 +62,14 @@
                             <li><a href="{{ route('login') }}">Вход</a></li>
                             <li><a href="{{ route('register') }}">Регистрация</a></li>
                         @else
-                            @if(Auth::user()->type == "owner")
-                            <li class="apikey-info"></li>
+                            @if(Auth::user()->type == "carsbazar")
+                                <li><a href="/home"><i class="fa fa-home"></i>&nbsp;Главная</a></li>
+                                <li><a href="/home/accounts"><i class="fa fa-account"></i>&nbsp;Аккаунты</a></li>
+                                <li><a href="/home/apikeys"><i class="fa fa-gear"></i>&nbsp;АPI</a></li>
+                                <li><a href="/home/clients"><i class="fa fa-user"></i>&nbsp;Пользователи</a></li>
+                                <li>&nbsp;</li>
+                            @elseif(Auth::user()->type == "owner")
+                                <li class="apikey-info"></li>
                             @endif
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -70,7 +77,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="#"onclick="$('#user_update').modal();">Профиль</a>
+                                        <a href="#" onclick="$('#user_update').modal();">Профиль</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Выход</a>

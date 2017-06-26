@@ -46,7 +46,7 @@ var carbazar = {
                 }
             }
         });
-        console.debug(ret);
+        //console.debug(ret);
         return ret;
     },
     statusSelect:function(s,v){
@@ -60,7 +60,7 @@ var carbazar = {
             sta.push(v);
         }
         hid.val(sta.join(','));
-        this.reportRequest();
+        this.request("#reports");
     },
     reportRequest:function(){
         $.ajax({
@@ -82,6 +82,55 @@ var carbazar = {
             }
         });
     },
+    request:function(){
+        var containers = (arguments.length)?arguments[0]:".containers-loader";
+        $(containers).each(function(){
+            var container = this, $container = $(container),url = $container.attr("data-ref"),name= $container.attr("data-name"),func=$container.attr("data-func"),filter = $container.attr("data-filter");
+            console.debug("loading data for "+name);
+            filters = carbazar.getFilters();
+            if(typeof(filter)!="undefined") {
+                var arr = filter.split(/[\s,]/g);
+                for(var i=0;i<arr.length;++i){
+                    filters[$(arr[i]).attr("name")]= $(arr[i]).val();
+                }
+            }
+            $.ajax({
+                url:url,
+                data:filters,
+                dataType:"json",
+                success:function(d,x,s){
+                    window[func](d,$container);
+                }
+            });
+        });
+    },
+    forms:function(){
+        var getFormData = function(f){
+            var data = {};
+            f.find("input,select").each(function(){
+                var n=$(this).attr("name"),v=$(this).val();
+                if(v.length)data[n]=v;
+            });
+            return data;
+        };
+        $(".modal").each(function(){
+            var $tut = $(this);
+
+            $(this).find(".submit-data").on("click",function(){
+                var url = $tut.attr("data-rel");formData = getFormData($tut);
+                console.debug(url,formData);
+
+                $.ajax({
+                    url:url,
+                    data:formData,
+                    dataType:"json",
+                    success:function(d,x,s){
+                        document.location.reload();
+                    }
+                });
+            });
+        });
+    },
     csvRequest:function(){
         document.location="/data/csv?"+$.param(this.getFilters());
     },
@@ -92,8 +141,7 @@ var carbazar = {
                 url:"/data/account",
                 dataType:"json",
                 success:function(d,x,s){
-                    console.debug(d);
-                    if(typeof(cb)=="function")cb(d);
+                    if(typeof(cb)=="function")cb(d[0]);
                 }
             });
         }
@@ -113,23 +161,37 @@ var carbazar = {
         }
     }
 };
+window.comboAccounts=function(d,c){
+    console.debug("comboAccounts ",d);
+    c.html('');
+    for(var i in d)c.append('<option value="'+d[i].id+'">'+d[i].name+'</option>');
+}
+window.comboApikeys=function(d,c){
+    console.debug("comboApikeys ",d);
+    c.html('');
+    for(var i in d)c.append('<option value="'+d[i].id+'">'+d[i].apikey+'#'+i+'</option>');
+}
 $(document).ready(function(){
-    $('.type-date').datepicker();
+    //console.clear();
     console.debug("carbazar app loaded");
-    carbazar.reportRequest();
-
+    $('.type-date').datepicker();
+    carbazar.request();
+    carbazar.forms();
     // carbazar.apikey.info(function(d){
     //     console.debug(d,$(".apikey-info"));
     //     // $(".apikey-info").html("<sub>Осталось:</sub> "+d.quantity);
     //     $(".apikey-info").html(d.quantity);
     //     $(".apikey").html(d.apikey);
     // });
-    setInterval(45000,carbazar.apikey.info(function(d){
-        console.debug(d,$(".apikey-info"));
+    setInterval(45000,carbazar.account.info(function(d){
+        console.debug(d,$(".account-info"));
         // $(".apikey-info").html("<sub>Осталось:</sub> "+d.quantity);
         $(".apikey-info").html(d.quantity);
-        $(".apikey").html(d.apikey);
     }));
+    carbazar.apikey.info(function(d){
+        console.debug(d,$(".apikey-info"));
+        $(".apikey").html(d.apikey);
+    });
     $('body').on("keyup",function(event){
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if(keycode == 13) {
